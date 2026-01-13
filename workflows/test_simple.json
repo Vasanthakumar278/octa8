@@ -1,0 +1,68 @@
+{
+    "meta": {
+        "instanceId": "local"
+    },
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "init",
+                "responseMode": "lastNode"
+            },
+            "id": "1",
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1.1,
+            "position": [
+                240,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "http://localhost:11434/api/generate",
+                "method": "POST",
+                "sendBody": true,
+                "specifyBody": "keypair",
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "model",
+                            "value": "phi3:mini"
+                        },
+                        {
+                            "name": "prompt",
+                            "value": "=Hello, this is a test. Reply in one sentence."
+                        },
+                        {
+                            "name": "stream",
+                            "value": "false"
+                        }
+                    ]
+                }
+            },
+            "id": "2",
+            "name": "Test Ollama",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                460,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Test Ollama",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {}
+}

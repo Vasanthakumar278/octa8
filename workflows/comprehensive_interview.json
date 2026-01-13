@@ -1,0 +1,68 @@
+{
+    "name": "Comprehensive Interview",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "chat",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "id": "webhook-chat",
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1.1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "url": "http://localhost:11434/api/generate",
+                "method": "POST",
+                "sendBody": true,
+                "specifyBody": "keypair",
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "model",
+                            "value": "phi3:mini"
+                        },
+                        {
+                            "name": "prompt",
+                            "value": "=You are an expert AI Interviewer conducting a live interview.\n\nUser Answer: {{ $json.body.message }}\n\nConversation History: {{ $json.body.history }}\n\nTask:\n1. Evaluate the answer for technical correctness and communication clarity\n2. Provide brief constructive feedback\n3. Ask a relevant follow-up question OR if 5+ questions asked or user says 'finish', provide a FINAL SCORECARD:\n\n--- SCORECARD ---\nTechnical Score: X/10\nCommunication Score: Y/10\nStrengths: [bullet points]\nImprovements: [bullet points]\nSummary: [concluding remarks]"
+                        },
+                        {
+                            "name": "stream",
+                            "value": "false"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "ollama-chat",
+            "name": "Ollama Request",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                500,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Ollama Request",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {}
+}

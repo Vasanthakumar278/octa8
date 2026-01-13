@@ -1,0 +1,68 @@
+{
+  "name": "Interview Initializer",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "init",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-init",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:11434/api/generate",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "phi3:mini"
+            },
+            {
+              "name": "prompt",
+              "value": "=You are a professional HR Interviewer.\n\nResume Context: {{ $json.body.resume }}\n\nJob Description: {{ $json.body.jobDescription }}\n\nTask: Start the interview professionally. Welcome the candidate and ask the first relevant interview question based on the job requirements."
+            },
+            {
+              "name": "stream",
+              "value": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ollama-init",
+      "name": "Ollama Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Ollama Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}

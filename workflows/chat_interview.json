@@ -1,0 +1,50 @@
+{
+    "name": "Interview Chat",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "chat",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://localhost:11434/api/generate",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonContent": "={\n  \"model\": \"llama3\",\n  \"prompt\": \"User Answer: {{ $json.body.message.replace(/\\\"/g, '\\\\\\\"').replace(/\\n/g, '\\\\n') }}\\n\\nHistory: {{ JSON.stringify($json.body.history).replace(/\\\"/g, '\\\\\\\"') }}\\n\\nTask: Continue the interview. \\n\\nLogic:\\n1. If the user says 'end', 'stop', or 'finish', OR if the conversation seems complete, provide a Final Assessment.\\n2. The Assessment MUST include: Communication Score (1-10), Technical Score (1-10), and Feedback on strengths/improvements.\\n3. Otherwise, ask the next relevant question based on the job role and candidate's previous answer. Keep it conversational.\",\n  \"stream\": false\n}",
+                "options": {}
+            },
+            "name": "Ollama Request",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                500,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Ollama Request",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}
